@@ -42,8 +42,7 @@ public class SendScreenThread extends Thread{
 				dos.write(data);
 				dos.flush();
 			} catch (IOException e) {
-				System.out.println("Õ¯¬Á”–Œ Ã‚,Ωÿ∆¡ ß∞‹");
-				e.printStackTrace();
+				break;
 			}
 		}
 	}

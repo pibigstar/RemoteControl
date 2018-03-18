@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import com.pibigstar.thread.SendScreenThread;
+import com.pibigstar.util.GetIp;
 
 /**
  * 服务端，等待控制端的接入
@@ -18,15 +19,15 @@ public class Service {
 
 	private  DataOutputStream dos;
 	private  ObjectOutputStream oos;
-	private final int port = 9090; 
+	private final static int port = 9090; 
 	public static void main(String[] args) throws IOException {
-		new Service().startServer();
-
+		new Service().startServer(port);
 	}
 
-	private void startServer(){
+	private void startServer(int port){
 		try {
 			ServerSocket serverSocket = new ServerSocket(port);
+			System.out.println("server started in:"+GetIp.getHostIp());
 			//等待客户端的连接
 			Socket socket = serverSocket.accept();
 			//得到客户端的输出流
