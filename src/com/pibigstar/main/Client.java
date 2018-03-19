@@ -1,7 +1,15 @@
 package com.pibigstar.main;
 
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -18,6 +26,7 @@ import com.pibigstar.ui.MyJFrame;
 public class Client extends Thread{
 	
 	private DataInputStream dis;
+	private ObjectOutputStream oos;
 	private static Socket socket;
 	private MyJFrame jFrame;
 	
@@ -43,6 +52,7 @@ public class Client extends Thread{
 			try {
 				 socket = new Socket(host,Integer.parseInt(port));
 				 dis = new DataInputStream(socket.getInputStream());
+				 oos = new ObjectOutputStream(socket.getOutputStream());
 			} catch (NumberFormatException e) {
 				JOptionPane.showMessageDialog(null,"未知端口号");
 				break;
@@ -58,8 +68,77 @@ public class Client extends Thread{
 		return false;
 	}
 	
+	/**
+	 * 显示界面并添加监控
+	 */
 	private void showUi() {
 		jFrame = new MyJFrame("java 远程监控");
+		// 鼠标监听
+		jFrame.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				sendEvent(e);
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				sendEvent(e);
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				sendEvent(e);
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				sendEvent(e);
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				sendEvent(e);
+			}
+		});
+		// 鼠标滚动
+		jFrame.addMouseWheelListener(new MouseWheelListener() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				sendEvent(e);
+			}
+		});
+		
+		// 键盘监听
+		jFrame.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				sendEvent(e);
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				sendEvent(e);
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				sendEvent(e);
+			}
+		});
+	}
+	
+	/**
+	 * 将事件发送到被控制端
+	 * @param e
+	 */
+	private void sendEvent(InputEvent e) {
+		try {
+			oos.writeObject(e);
+			System.out.println("发送事件："+e);
+		} catch (IOException e1) {
+			System.out.println("发送事件失败");
+		}
 	}
 	
 	@Override
@@ -73,7 +152,6 @@ public class Client extends Thread{
 				jFrame.changeImage(imageIcon);
 			} catch (Exception e) {
 				System.out.println("获得输入流异常");
-				e.printStackTrace();
 				break;
 			}
 		}
