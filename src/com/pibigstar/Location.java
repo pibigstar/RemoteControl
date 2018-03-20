@@ -9,10 +9,11 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;  
 import javax.swing.JLabel;  
 
-/** 
- * 2015-05-17 
- * 
- */  
+/**
+ * 测试，使用robot显示本地桌面
+ * @author pibigstar
+ *
+ */
 public class Location {  
 	public static void main(String[] args) {  
 		try {  

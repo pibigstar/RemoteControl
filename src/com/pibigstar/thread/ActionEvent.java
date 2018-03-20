@@ -1,11 +1,9 @@
 package com.pibigstar.thread;
 
-import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 
 /**
@@ -24,39 +22,41 @@ public class ActionEvent extends Thread{
 
 	@Override
 	public void run() {
-		while (true) {
-			try {
+		try {
+			Robot robot = new Robot();
+			while (true) {
 				Object readObject = ois.readObject();
 				InputEvent inputEvent = (InputEvent) readObject;
-				actionEvent(inputEvent);
-			} catch (ClassNotFoundException | IOException e) {
-				System.out.println("客户端退出。。。");
-				break;
+				actionEvent(robot,inputEvent);
 			}
+		} catch (Exception e) {
+			System.out.println("客户端退出。。。");
+			return;
 		}
-
 	}
+
 
 	/**
 	 * 执行具体的事件
 	 * @param inputEvent
 	 */
-	private void actionEvent(InputEvent inputEvent) {
-		Robot robot = null;
-		try {
-			robot = new Robot();
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
+	private void actionEvent(Robot robot,InputEvent inputEvent) {
+		int mousebuttonmask = -100; //鼠标按键 
 		// 鼠标事件
 		if (inputEvent instanceof MouseEvent) {
 			MouseEvent e = (MouseEvent)inputEvent;
 			int type = e.getID();
 			if(type==MouseEvent.MOUSE_PRESSED){  //按下
-				robot.mousePress(2);
+				robot.mouseMove( e.getX() , e.getY() );  
+				mousebuttonmask = getMouseClick(e.getButton() );
+				if(mousebuttonmask != -100)
+					robot.mousePress(mousebuttonmask);
 			}
 			if(type==MouseEvent.MOUSE_RELEASED){  //放开
-				robot.mouseRelease(3);
+				robot.mouseMove( e.getX() , e.getY() );  
+				mousebuttonmask = getMouseClick( e.getButton() );//取得鼠标按键  
+				if(mousebuttonmask != -100)  
+					robot.mouseRelease( mousebuttonmask ); 
 			}
 			if(type==MouseEvent.MOUSE_MOVED) { //移动
 				robot.mouseMove(e.getX(), e.getY());
@@ -83,17 +83,13 @@ public class ActionEvent extends Thread{
 	}
 
 	//根据发送事的Mouse事件对象，转变为通用的Mouse按键代码
-	private int getMouseClick(int button){
-		if(button==MouseEvent.BUTTON1){
-			return 2;
-		} 
-		if(button==MouseEvent.BUTTON2){
-			return 3;
-		} 
-		if(button==MouseEvent.BUTTON3){
-			return InputEvent.BUTTON3_MASK;
-		}
-		return -1;
-	}
+	private static int getMouseClick(int button) { 
+		//取得鼠标按键 
+		if (button == MouseEvent.BUTTON1) //左键 ,中间键为BUTTON2  
+			return InputEvent.BUTTON1_MASK; 
+		if (button == MouseEvent.BUTTON3) //右键  
+			return InputEvent.BUTTON3_MASK; 
+		return -100; 
 
+	} 
 }
