@@ -138,9 +138,8 @@ public class Client extends Thread{
 		try {
 			oos.writeObject(e);
 			oos.flush();
-			System.out.println("发送事件："+e);
 		} catch (IOException e1) {
-			System.out.println("发送事件失败");
+			System.out.println("发送事件失败" + e);
 		}
 	}
 
